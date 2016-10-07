@@ -56,4 +56,3 @@ fabric.properties
 # *.ipr
 
 target/
-.gitignore
