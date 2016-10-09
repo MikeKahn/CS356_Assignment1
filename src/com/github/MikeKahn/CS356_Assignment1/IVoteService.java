@@ -19,8 +19,20 @@ public class IVoteService {
         random = new Random(seed);
     }
 
-    public void submitQuestion(String name, String ... choices) {
+    public void submitQuestion(String name, Class<? extends Question> cls, String ... choices) {
+        try {
+            Question question = cls.getConstructor(String.class).newInstance(new Object[] { name });
+            question.addChoices(choices);
+            questions.put(name,question);
+        } catch (Exception e) {
+            System.err.println("Invalid question type.");
+        }
+    }
 
+    public void addChoices(String qName, String ... choices) {
+        if(questions.containsKey(qName)) {
+            questions.get(qName).addChoices(choices);
+        }
     }
 
     public Question getQuestion(String name) {

@@ -10,10 +10,19 @@ public class Driver {
     public static void main(String[] args) {
 
         IVoteService service = new IVoteService(seed);
-        for (int i = 0; i < 50; i++) {
+        service.submitQuestion("singleTest", SingleQuestion.class, "A");
+        service.submitQuestion("multipleTest", MultipleQuestion.class, "B");
+
+        service.addChoices("singleTest", "C", "D", "E");
+        service.addChoices("multipleTest", "F", "G", "H");
+
+        System.out.println(service.getQuestion("singleTest"));
+        System.out.println(service.getQuestion("multipleTest"));
+
+        /*for (int i = 0; i < 50; i++) {
             service.generateStudent();
         }
-        service.printStudentList();
+        service.printStudentList();*/
     }
 
 
