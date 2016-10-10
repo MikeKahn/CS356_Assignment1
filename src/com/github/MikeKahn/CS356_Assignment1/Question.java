@@ -15,6 +15,8 @@ public abstract class Question {
     //Name of the question(title)
     public final String name;
 
+    private boolean open = false;
+
     //Holds the possible answers with their respective counts
     public HashMap<String, Integer> choices;
 
@@ -43,6 +45,16 @@ public abstract class Question {
             choices.put(key, 0);
         }
         answers.clear();
+    }
+
+    public void setOpen(boolean status) {
+        if(status) open = true;
+        else {
+            System.out.println("Question|Votes");
+            for (String key: choices.keySet()) {
+                System.out.println(key + "|" + choices.get(key));
+            }
+        }
     }
 
     //Handles the answers given by student, such as whether to only allow 1 answer or multiple.
