@@ -1,6 +1,6 @@
 package com.github.MikeKahn.CS356_Assignment1;
-
-import java.util.InputMismatchException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -10,31 +10,42 @@ public class Driver {
 
     private static long seed = 2134623784123123L;
 
-    private static String optionsMain = "1. Configure\n2. Vote\n3. Data\n4. Exit";
+    private static String[] optionsMain = new String[] {"Configure","Vote","Data","Exit"};
+    private static String[] optionsConfigure = new String[] {"List", "Edit", "New", "Remove","Back"};
+    private static String[] optionsVote = new String[] {"List","New","Load","Back"};
+    private static String[] optionsStudent = new String[] {"List","Open","Back"};
+    private static String[] optionsStudentVote = new String[] {"Vote", "View","Back"};
+    private static String[] optionsData = new String[] {"List","Open","Back"};
 
     private static boolean exit = false;
 
-    //TODO: change command system to be more extensible
-
     public static void main(String[] args) {
         System.out.println("Initializing IVote Service.");
-        IVoteService service = new IVoteService(seed);
-
         Scanner scanner = new Scanner(System.in);
+        IVoteService service = new IVoteService(scanner, seed);
 
-        Commands commands = new Commands(scanner);
+        String input = "";
 
-        while(!exit) {
-            System.out.println(optionsMain);
-
-            System.out.print("Please choose an option:");
-            if(scanner.hasNext()) {
-                String input = scanner.next().toLowerCase();
-            } else {
-                System.err.println("Invalid input entered.");
+        while(!input.equals("exit")) {
+            printOptions(optionsMain);
+            input = scanner.next().toLowerCase();
+            if(input.equals("exit")) {
+                continue;
+            } else if(input.equals("configure")) {
+                service.printChildren("configure");
+            } else if(input.equals("vote")) {
+                service.printChildren("vote");
+            } else if(input.equals("data")) {
+                service.printChildren("data");
             }
         }
+        System.out.println("Program closing.");
     }
 
-
+    private static void printOptions(String[] options) {
+        for (int i = 0; i < options.length; i++) {
+            System.out.println((i+1) + ". " + options[i]);
+        }
+        System.out.print("Please choose an option: ");
+    }
 }
