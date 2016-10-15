@@ -1,8 +1,6 @@
 package com.github.MikeKahn.CS356_Assignment1;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Michael on 10/6/2016.
@@ -13,60 +11,97 @@ import java.util.Map;
 public abstract class Question {
 
     //Name of the question(title)
-    public final String name;
+    protected final String name;
 
-    private boolean open = false;
+    //Question
+    public final String content;
 
-    //Holds the possible answers with their respective counts
-    public HashMap<String, Integer> choices;
+    protected int votes;
+
+    //Holds the possible answers with their respective vote count
+    private HashMap<String, Integer> choiceCount;
+
+    public ArrayList<String> choices;
 
     //holds student ids with their respective answers
-    public HashMap<Student, ArrayList<Integer>> answers;
+    HashMap<Student, Integer[]> answers;
 
-    public Question(String name) {
+    //Init question with no choiceCount
+    public Question(String name, String content) {
         this.name = name;
-        choices = new HashMap<>();
+        this.content = content;
+        choiceCount = new HashMap<>();
+        choices = new ArrayList<>();
         answers = new HashMap<>();
+        votes = 0;
     }
 
-    //add a list of choices(or one) and set initial answer count to zero.
+    //Init question with choiceCount
+    public Question(String name, String content, String ... choices) {
+        this.name = name;
+        this.content = content;
+        votes = 0;
+        answers = new HashMap<>();
+        choiceCount = new HashMap<>();
+        this.choices = new ArrayList<>(Arrays.asList(choices));
+        for(String s: choices) {
+            choiceCount.put(s, 0);
+        }
+    }
+
+    protected void updateChoice(Integer ... input) {
+        for(Integer i: input) {
+            choiceCount.put(choices.get(i), choiceCount.get(choices.get(i)) + 1);
+        }
+    }
+
+    //add a list of choiceCount(or one) and set initial answer count to zero.
     public void addChoices(String ... choiceList) {
         if(choiceList.length == 0) {
-            System.err.println("No choices entered.");
+            System.err.println("No choiceCount entered.");
             return;
         }
-        for (String c: choiceList)
-            choices.put(c,0);
+        for (String c: choiceList) {
+            choiceCount.put(c, 0);
+            choices.add(c);
+        }
     }
 
     //Resets current student answers(sets all vote counts to zero)
     public void reset() {
-        for (String key: choices.keySet()) {
-            choices.put(key, 0);
+        for (String key: choiceCount.keySet()) {
+            choiceCount.put(key, 0);
         }
         answers.clear();
     }
 
-    public void setOpen(boolean status) {
-        if(status) open = true;
-        else {
-            System.out.println("Question|Votes");
-            for (String key: choices.keySet()) {
-                System.out.println(key + "|" + choices.get(key));
-            }
+    public void printQuestion() {
+        System.out.println(content);
+        for(String choice: choiceCount.keySet()) {
+            System.out.println("\t" + choice);
+        }
+    }
+
+    public void printResults() {
+        for(String choice: choiceCount.keySet()) {
+            System.out.println("\t" + choice + ": " + choiceCount.get(choice));
         }
     }
 
     //Handles the answers given by student, such as whether to only allow 1 answer or multiple.
-    public abstract void handleAnswers(Student student, ArrayList<Integer> answers);
+    public abstract void handleAnswers(Student student, Integer ... answers);
 
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder(name + ", question type: " + this.getClass().getSimpleName());
-        for(String key: choices.keySet()) {
+        for(String key: choiceCount.keySet()) {
             output.append("\n\t" + key);
         }
         return output.toString();
+    }
+
+    public int getChoiceCount() {
+        return choiceCount.keySet().size();
     }
 
 }

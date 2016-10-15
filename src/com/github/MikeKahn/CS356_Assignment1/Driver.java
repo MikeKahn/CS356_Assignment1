@@ -1,7 +1,10 @@
 package com.github.MikeKahn.CS356_Assignment1;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Scanner;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by Michael on 10/6/2016.
@@ -10,42 +13,70 @@ public class Driver {
 
     private static long seed = 2134623784123123L;
 
-    private static String[] optionsMain = new String[] {"Configure","Vote","Data","Exit"};
-    private static String[] optionsConfigure = new String[] {"List", "Edit", "New", "Remove","Back"};
-    private static String[] optionsVote = new String[] {"List","New","Load","Back"};
-    private static String[] optionsStudent = new String[] {"List","Open","Back"};
-    private static String[] optionsStudentVote = new String[] {"Vote", "View","Back"};
-    private static String[] optionsData = new String[] {"List","Open","Back"};
-
     private static boolean exit = false;
+
+    private static int studentCount = 50;
 
     public static void main(String[] args) {
         System.out.println("Initializing IVote Service.");
-        Scanner scanner = new Scanner(System.in);
-        IVoteService service = new IVoteService(scanner, seed);
+        Random random = new Random(seed);
+        IVoteService service = new IVoteService(random);
 
-        String input = "";
+        System.out.println("Generating student list");
+        Set<String> students = new HashSet<>();
+        for(int i = 0; i < studentCount; i++) {
+            students.add(service.generateStudent());
+        }
+        System.out.println("Students generated.");
 
-        while(!input.equals("exit")) {
-            printOptions(optionsMain);
-            input = scanner.next().toLowerCase();
-            if(input.equals("exit")) {
-                continue;
-            } else if(input.equals("configure")) {
-                service.printChildren("configure");
-            } else if(input.equals("vote")) {
-                service.printChildren("vote");
-            } else if(input.equals("data")) {
-                service.printChildren("data");
+        System.out.println("Creating questions.");
+        ArrayList<Question> questions = getTests();
+        for(Question q: questions) {
+            service.submitQuestion(q);
+        }
+        System.out.println("Question generated.");
+
+        System.out.println("Simulating voting.");
+        //have students randomly vote for questions
+        for(Question q: questions) {
+            for(String s: students) {
+                if(random.nextInt(101) > 50) {continue;} //decide whether student will vote on given question at 50% chance
+                if(q instanceof SingleQuestion) {
+                    int answer = random.nextInt(q.getChoiceCount());
+                    service.submitAnswers(q.name, s, answer);
+                } else if(q instanceof MultipleQuestion) {
+                    ArrayList<Integer> answers = new ArrayList<>(q.getChoiceCount()); //create a list for answers with default size set to max amount of answers
+                    for(int i = 0; i < q.getChoiceCount(); i++) {
+                        if(random.nextInt(101) > 50) {  //50% chance of choosing the answer
+                            answers.add(i);
+                        }
+                    }
+                    if(!answers.isEmpty()) { //check to see if there is at least 1 answer from student
+                        service.submitAnswers(q.name,s, answers.toArray(new Integer[answers.size()]));
+                    }
+                }
             }
         }
-        System.out.println("Program closing.");
+        //print results
+        service.printQuestionDataBasic();
+        for (Question q: questions) {
+            service.printQuestionDataAdv(q.name);
+        }
     }
 
-    private static void printOptions(String[] options) {
-        for (int i = 0; i < options.length; i++) {
-            System.out.println((i+1) + ". " + options[i]);
-        }
-        System.out.print("Please choose an option: ");
+    //Pre-generated questions
+    private static ArrayList<Question> getTests() {
+        ArrayList<Question> questions = new ArrayList<>();
+
+        questions.add(new SingleQuestion("SingleTest1","What is 4+7?", "-9001", "0", "42", "11"));
+        questions.add(new SingleQuestion("SingleTest2","What is the 7th letter of the alphabet?", "A", "Z", "G", "I"));
+        questions.add(new MultipleQuestion("MultipleTest1", "Which is your favorite letter?", "A", "B", "C", "D", "E"));
+        questions.add(new MultipleQuestion("MultipleTest2", "Which is true", "True", "False", "Not not true", "maybe true", "probably not false"));
+        questions.add(new SingleQuestion("SingleTest3","Is there more than 1 answer to this question?", "Yes", "No"));
+        questions.add(new SingleQuestion("SingleTest4","what is the question?", "yes", "no", "maybe", "meh"));
+        questions.add(new MultipleQuestion("MultipleTest3", "I ran out of ideas?", "something", "something", "a thing", "not a thing", "life"));
+        questions.add(new MultipleQuestion("MultipleTest42", "What is the meaning of stuff?", "more stuff", "nothing", "life", "death", "everything"));
+
+        return questions;
     }
 }

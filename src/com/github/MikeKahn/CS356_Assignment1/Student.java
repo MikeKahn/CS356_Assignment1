@@ -11,10 +11,18 @@ public class Student {
     public final String id;
 
     //Set of all the questions this student has answered
-    public HashSet<String> questions;
+    private HashSet<String> questions;
 
     public Student(String id) {
         this.id = id;
         questions = new HashSet<>();
+    }
+
+    public void addQuestion(String name) {
+        questions.add(name);
+    }
+
+    public HashSet<String> getQuestions() {
+        return questions;
     }
 }

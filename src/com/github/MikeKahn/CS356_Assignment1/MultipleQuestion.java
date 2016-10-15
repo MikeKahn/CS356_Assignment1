@@ -7,17 +7,22 @@ import java.util.ArrayList;
  */
 public class MultipleQuestion extends Question {
 
-    public MultipleQuestion(String name) {
-        super(name);
+    public MultipleQuestion(String name, String content) {
+        super(name,content);
     }
 
-    //TODO: Decide whether a students already submitted answers are simply overwritten or the new answers added to the old
+    public MultipleQuestion(String name, String content, String ... choices) {
+        super(name,content, choices);
+    }
+
     @Override
-    public void handleAnswers(Student student, ArrayList<Integer> input) {
-        if(answers.size() == 0) {
+    public void handleAnswers(Student student, Integer ... input) {
+        if(input.length == 0) {
             System.out.println("Input Error: No answer given");
             return;
         }
+        updateChoice(input);
         answers.put(student, input);
+        votes += input.length;
     }
 }
