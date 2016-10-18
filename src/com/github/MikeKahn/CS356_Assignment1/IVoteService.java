@@ -30,7 +30,7 @@ class IVoteService {
     //submit a students answers to a question
     void submitAnswers(String qName, String id, Integer ... answers) {
         if(questions.containsKey(qName)) { //check if question exists
-            questions.get(qName).handleAnswers(id, answers);
+            questions.get(qName).handleVotes(id, answers);
         }
     }
 

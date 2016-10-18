@@ -11,7 +11,7 @@ class SingleQuestion extends Question {
     }
 
     @Override
-    public void handleAnswers(String id, Integer ... input) {
+    public void handleVotes(String id, Integer ... input) {
         if(input.length > 1) { //Too many answers
             System.out.println("Input Error: Question is single choice.");
             return;

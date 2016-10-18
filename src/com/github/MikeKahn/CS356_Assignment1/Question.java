@@ -19,14 +19,14 @@ abstract class Question {
     //# of votes this question has in total
     int votes;
 
+    //holds student ids with their respective answers
+    HashMap<String, Integer[]> answers;
+
     //Holds the possible answers with their respective vote count
     private HashMap<String, Integer> voteCounts;
 
     //List of all possible answers to the question
     private ArrayList<String> choices;
-
-    //holds student ids with their respective answers
-    HashMap<String, Integer[]> answers;
 
     Question(String name, String content, String ... choices) {
         this.name = name;
@@ -66,7 +66,7 @@ abstract class Question {
     }
 
     //Handles the answers given by student, such as whether to only allow 1 answer or multiple.
-    abstract void handleAnswers(String student, Integer ... answers);
+    abstract void handleVotes(String student, Integer ... answers);
 
     @Override
     public String toString() {

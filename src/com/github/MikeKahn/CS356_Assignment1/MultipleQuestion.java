@@ -11,7 +11,7 @@ class MultipleQuestion extends Question {
     }
 
     @Override
-    public void handleAnswers(String id, Integer ... input) {
+    public void handleVotes(String id, Integer ... input) {
         if(input.length == 0) {
             System.out.println("Input Error: No answer given");
             return;
