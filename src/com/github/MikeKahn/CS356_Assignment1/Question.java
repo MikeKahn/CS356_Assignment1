@@ -34,9 +34,12 @@ abstract class Question {
         votes = 0;
         answers = new HashMap<>();
         voteCounts = new HashMap<>();
-        this.choices = new ArrayList<>(Arrays.asList(choices));
+        this.choices = new ArrayList<>(choices.length); //create new arraylist with init size = to choices.length
         for(String s: choices) {
-            voteCounts.put(s, 0);
+            if(!voteCounts.containsKey(s)) { //duplicate answer
+                voteCounts.put(s, 0);
+                this.choices.add(s);
+            }
         }
     }
 
