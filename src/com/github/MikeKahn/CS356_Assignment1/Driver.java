@@ -1,5 +1,4 @@
 package com.github.MikeKahn.CS356_Assignment1;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,23 +7,18 @@ import java.util.Set;
 
 /**
  * Created by Michael on 10/6/2016.
+ *
  */
 public class Driver {
 
-    private static long seed = 2134623784123123L;
-
-    private static boolean exit = false;
-
-    private static int studentCount = 50;
-
     public static void main(String[] args) {
         System.out.println("Initializing IVote Service.");
-        Random random = new Random(seed);
+        Random random = new Random();
         IVoteService service = new IVoteService(random);
 
         System.out.println("Generating student list");
         Set<String> students = new HashSet<>();
-        for(int i = 0; i < studentCount; i++) {
+        for(int i = 0; i < 50; i++) {
             students.add(service.generateStudent());
         }
         System.out.println("Students generated.");
@@ -68,14 +62,15 @@ public class Driver {
     private static ArrayList<Question> getTests() {
         ArrayList<Question> questions = new ArrayList<>();
 
+        //Question: name, question, answers ...
         questions.add(new SingleQuestion("SingleTest1","What is 4+7?", "-9001", "0", "42", "11"));
         questions.add(new SingleQuestion("SingleTest2","What is the 7th letter of the alphabet?", "A", "Z", "G", "I"));
         questions.add(new MultipleQuestion("MultipleTest1", "Which is your favorite letter?", "A", "B", "C", "D", "E"));
-        questions.add(new MultipleQuestion("MultipleTest2", "Which is true", "True", "False", "Not not true", "maybe true", "probably not false"));
+        questions.add(new MultipleQuestion("MultipleTest2", "Which is true", "1. True", "2. False", "3. Not not true", "4. maybe true", "5. probably not false"));
         questions.add(new SingleQuestion("SingleTest3","Is there more than 1 answer to this question?", "Yes", "No"));
         questions.add(new SingleQuestion("SingleTest4","what is the question?", "yes", "no", "maybe", "meh"));
         questions.add(new MultipleQuestion("MultipleTest3", "I ran out of ideas?", "something", "something", "a thing", "not a thing", "life"));
-        questions.add(new MultipleQuestion("MultipleTest42", "What is the meaning of stuff?", "more stuff", "nothing", "life", "death", "everything"));
+        questions.add(new MultipleQuestion("MultipleTest4", "What is the meaning of stuff?", "more stuff", "nothing", "life", "death", "everything"));
 
         return questions;
     }
