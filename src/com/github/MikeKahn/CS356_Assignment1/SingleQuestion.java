@@ -10,7 +10,6 @@ class SingleQuestion extends Question {
         super(name,content, choices);
     }
 
-    //TODO: Check if no answer is allowed
     @Override
     public void handleAnswers(String id, Integer ... input) {
         if(input.length > 1) { //Too many answers
@@ -21,8 +20,11 @@ class SingleQuestion extends Question {
             System.out.println("Input Error: No answer given");
             return;
         }
+        if(answers.containsKey(id)) { //student has previously voted
+            removeVotes(answers.get(id));
+        }
         //place student and input in answer map, will overwrite old answers as well
-        updateChoice(input);
+        updateVotes(input);
         answers.put(id, input);
         votes++;
     }

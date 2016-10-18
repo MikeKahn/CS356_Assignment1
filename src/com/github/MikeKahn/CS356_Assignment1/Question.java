@@ -16,38 +16,49 @@ abstract class Question {
     //Question
     final String content;
 
+    //# of votes this question has in total
     int votes;
 
     //Holds the possible answers with their respective vote count
-    private HashMap<String, Integer> choiceCount;
+    private HashMap<String, Integer> voteCounts;
 
+    //List of all possible answers to the question
     private ArrayList<String> choices;
 
     //holds student ids with their respective answers
     HashMap<String, Integer[]> answers;
 
-    //Init question with choiceCount
     Question(String name, String content, String ... choices) {
         this.name = name;
         this.content = content;
         votes = 0;
         answers = new HashMap<>();
-        choiceCount = new HashMap<>();
+        voteCounts = new HashMap<>();
         this.choices = new ArrayList<>(Arrays.asList(choices));
         for(String s: choices) {
-            choiceCount.put(s, 0);
+            voteCounts.put(s, 0);
         }
     }
 
-    void updateChoice(Integer ... input) {
+    //changes the vote count for a set of choices
+    void updateVotes(Integer ... input) {
         for(Integer i: input) {
-            choiceCount.put(choices.get(i), choiceCount.get(choices.get(i)) + 1);
+            String choice = choices.get(i);
+            voteCounts.put(choice, voteCounts.get(choice) + 1); //add 1 to vote count for choice
+        }
+    }
+
+    //for when a student would change their answers, remove old votes
+    void removeVotes(Integer ... input) {
+        for(Integer i: input) {
+            String choice = choices.get(i);
+            voteCounts.put(choice, voteCounts.get(choice) - 1); //sub 1 from vote count for choice
         }
     }
 
     void printResults() {
-        for(String choice: choiceCount.keySet()) {
-            System.out.println("\t" + choice + ": " + choiceCount.get(choice));
+        for(String choice: voteCounts.keySet()) {
+            System.out.println("\t" + choice + ": " + voteCounts.get(choice));
         }
     }
 
@@ -57,14 +68,14 @@ abstract class Question {
     @Override
     public String toString() {
         StringBuilder output = new StringBuilder( name + ": " +  content + ", question type: " + this.getClass().getSimpleName());
-        for(String key: choiceCount.keySet()) {
+        for(String key: voteCounts.keySet()) {
             output.append("\n\t").append(key);
         }
         return output.toString();
     }
 
-    int getChoiceCount() {
-        return choiceCount.keySet().size();
+    int getVoteCounts() {
+        return voteCounts.keySet().size();
     }
 
 }

@@ -7,7 +7,9 @@ import java.util.Set;
 
 /**
  * Created by Michael on 10/6/2016.
- *
+ * Driver for this sumulation
+ * Inits the vote service, generates a list of students, generates questions, then has the students
+ * randomly vote on questions, abiding by the question types rules(single or multiple answer)
  */
 public class Driver {
 
@@ -25,7 +27,7 @@ public class Driver {
 
         System.out.println("Creating questions.");
         ArrayList<Question> questions = getTests();
-        for(Question q: questions) {
+        for(Question q: questions) { //add all test questions to the service
             service.submitQuestion(q);
         }
         System.out.println("Question generated.");
@@ -36,11 +38,11 @@ public class Driver {
             for(String s: students) {
                 if(random.nextInt(101) > 50) {continue;} //decide whether student will vote on given question at 50% chance
                 if(q instanceof SingleQuestion) {
-                    int answer = random.nextInt(q.getChoiceCount());
+                    int answer = random.nextInt(q.getVoteCounts());
                     service.submitAnswers(q.name, s, answer);
                 } else if(q instanceof MultipleQuestion) {
-                    ArrayList<Integer> answers = new ArrayList<>(q.getChoiceCount()); //create a list for answers with default size set to max amount of answers
-                    for(int i = 0; i < q.getChoiceCount(); i++) {
+                    ArrayList<Integer> answers = new ArrayList<>(q.getVoteCounts()); //create a list for answers with default size set to max amount of answers
+                    for(int i = 0; i < q.getVoteCounts(); i++) {
                         if(random.nextInt(101) > 50) {  //50% chance of choosing the answer
                             answers.add(i);
                         }

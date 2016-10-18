@@ -16,7 +16,10 @@ class MultipleQuestion extends Question {
             System.out.println("Input Error: No answer given");
             return;
         }
-        updateChoice(input);
+        if(answers.containsKey(id)) { //student has previously voted
+            removeVotes(answers.get(id));
+        }
+        updateVotes(input); //update vote counts for new votes
         answers.put(id, input);
         votes += input.length;
     }
